@@ -3,7 +3,6 @@ import logging
 import sqlite3
 import asyncio
 from pathlib import Path
-from dotenv import load_dotenv
 
 from aiogram import Bot, Dispatcher, F, types
 from aiogram.enums import ParseMode, ContentType
@@ -22,9 +21,9 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
 
-# Config
+# Configso
 BOT_TOKEN = "7276754816:AAEnHv_LHHwhNro709Xst2fFSZ4t9g4sVVc"
-ADMIN_ID = 7945724174  # YOUR TELEGRAM ID HERE
+ADMIN_ID = [7945724174,6428277280]  # YOUR TELEGRAM ID HERE
 BOT_USERNAME = "@kreditbozori07"
 
 # Init
@@ -214,7 +213,7 @@ async def cmd_start(message: Message, state: FSMContext):
     
     if user:
         lang = user[0]
-        if message.from_user.id == ADMIN_ID:
+        if message.from_user.id in ADMIN_ID:
             await message.answer(TEXTS[lang]["admin_panel"], reply_markup=get_admin_keyboard(lang))
             return
         
@@ -606,8 +605,11 @@ async def process_phone(message: Message, state: FSMContext):
             f"🏠 Garov turi: {collateral_type_text}\n"
             f"📝 Garov haqida: {data['collateral_details']}"
         )
-        
-        await bot.send_message(ADMIN_ID, app_text)
+        for ADMIN in ADMIN_ID: 
+            try:
+                await bot.send_message(ADMIN, app_text)
+            except:
+                continue
         
     except Exception as e:
         logging.error(f"Database error: {e}")
@@ -620,7 +622,7 @@ async def process_phone(message: Message, state: FSMContext):
 
 @dp.callback_query(F.data == "admin_applications")
 async def admin_applications(callback: CallbackQuery):
-    if callback.from_user.id != ADMIN_ID:
+    if callback.from_user.id not in ADMIN_ID:
         await callback.answer("⚠️ Ruxsat yo'q!", show_alert=True)
         return
     
@@ -679,7 +681,7 @@ async def admin_applications(callback: CallbackQuery):
 
 @dp.callback_query(F.data == "admin_back")
 async def admin_back(callback: CallbackQuery):
-    if callback.from_user.id != ADMIN_ID:
+    if callback.from_user.id not in ADMIN_ID:
         await callback.answer("⚠️ Ruxsat yo'q!", show_alert=True)
         return
     
